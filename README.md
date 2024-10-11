@@ -6,22 +6,19 @@ MyEduVault is a comprehensive web application designed to assist students in man
 
 1. **User Authentication**
    - Secure login system allowing users to create accounts and manage profiles.
-   - Password recovery and account verification options.
-
+   - 
 2. **Dashboard**
-   - User-friendly interface providing an overview of academic progress, upcoming deadlines, and important notifications.
+   - User-friendly interface providing an overview of academic progress, upcoming deadlines.
 
 3. **Academic Records**
    - **Adding Semester Grades:** Input and update semester grades, which are automatically saved.
    - **Displaying Student Records:** Visual representation of academic performance over time, including CGPA calculation and semester summaries.
 
-4. **Resume Builder**
-   - Step-by-step tool guiding users to create professional resumes with templates and formatting options.
+4. **Resume Uploader**
    - Secure storage for multiple versions of resumes.
 
 5. **Skills Tracker**
    - Log and track skills gained through courses, projects, and internships.
-   - Visual representation of skill proficiency levels with recommendations for skill development.
 
 6. **Document Storage**
    - Secure area to upload and store important documents (e.g., transcripts, cover letters, certificates).
@@ -40,7 +37,6 @@ MyEduVault is a comprehensive web application designed to assist students in man
    - Option to categorize projects based on skills or subjects.
 
 10. **Wellness Tracker**
-    - Log physical and mental health activities, helping students maintain a balanced lifestyle.
     - Tips and resources for stress management and well-being.
 
 ## Technology Stack
