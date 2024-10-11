@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyEduVault - User Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #E7E8D1;
+        }
+
+        .container {
+            width: 300px;
+            margin: auto;
+            overflow: hidden;
+            margin-top: 40px;
+            padding: 60px;
+            background: #A7BEAE;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #B85042;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            width: 250px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: calc(100% - 40px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #A7BEAE;
+            border-radius: 4px;
+            background-color: #FFFFFF;
+            display: inline-block;
+        }
+
+        button {
+            background: #B85042;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #A7BEAE;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .signup-link a {
+            color: #B85042;
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+            color: #A7BEAE;
+        }
+
+        .remember-me {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .remember-me input {
+            margin-right: 10px;
+        }
+
+        .remember-me label {
+            color: #B85042;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="logo.png" alt="MyEduVault Logo" class="logo">
+        <h2>User Login</h2>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <div class="remember-me">
+                <input type="checkbox" id="rememberMe">
+                <label for="rememberMe">Remember Me</label>
+            </div>
+            <button type="submit">Login</button>
+            <p class="error" id="errorMessage"></p>
+        </form>
+        <div class="signup-link">
+            <p>Don't have an account? <a href="signup.html">Create one</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const validUsername = "user";
+            const validPassword = "password";
+
+            if (username === validUsername && password === validPassword) {
+                window.location.href = "index.html";
+            } else {
+                document.getElementById("errorMessage").textContent = "Invalid username or password.";
+            }
+        });
+    </script>
+</body>
+</html>

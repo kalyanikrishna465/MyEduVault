@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Skills</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #E7E8D1;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #A7BEAE;
+            color: black;
+            padding: 10px 0;
+            text-align: center;
+            border-radius: 8px;
+            position: relative;
+        }
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+        .home-icon {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            width: 30px;
+            height: auto;
+        }
+        main {
+            display: flex;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .skill-column {
+            flex: 1;
+            margin: 0 10px;
+        }
+        h3 {
+            color: #333;
+        }
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background: #B85042;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background: #A7BEAE;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            background-color: #c3decb;
+            color: black;
+        }
+        li {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .delete-skill {
+            color: #B85042;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 20px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px 0;
+            background: #E7E8D1;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html"><img src="home-icon.png" alt="Home" class="home-icon"></a>
+            <img src="logo.png" alt="MyEduVault Logo" class="logo">
+            <h1>Track Your Skills</h1>
+        </header>
+        <main>
+            <div class="skill-column">
+                <h3>Technical Skills</h3>
+                <form id="technicalSkillsForm">
+                    <input type="text" id="technicalSkillInput" placeholder="Enter a technical skill" required>
+                    <button type="submit">Add Technical Skill</button>
+                </form>
+                <h4>Your Technical Skills</h4>
+                <ul id="technicalSkillsList"></ul>
+            </div>
+            <div class="skill-column">
+                <h3>Soft Skills</h3>
+                <form id="softSkillsForm">
+                    <input type="text" id="softSkillInput" placeholder="Enter a soft skill" required>
+                    <button type="submit">Add Soft Skill</button>
+                </form>
+                <h4>Your Soft Skills</h4>
+                <ul id="softSkillsList"></ul>
+            </div>
+            <div class="skill-column">
+                <h3>Wishlist for Skills</h3>
+                <form id="wishlistForm">
+                    <input type="text" id="wishlistInput" placeholder="Enter a skill you wish to learn" required>
+                    <button type="submit">Add to Wishlist</button>
+                </form>
+                <h4>Your Wishlist Skills</h4>
+                <ul id="wishlistSkillsList"></ul>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2024 MyEduVault by Kalyani Krishna. All rights reserved.</p>
+        </footer>
+    </div>
+    <script>
+        const technicalSkillsForm = document.getElementById("technicalSkillsForm");
+        const technicalSkillInput = document.getElementById("technicalSkillInput");
+        const technicalSkillsList = document.getElementById("technicalSkillsList");
+
+        const softSkillsForm = document.getElementById("softSkillsForm");
+        const softSkillInput = document.getElementById("softSkillInput");
+        const softSkillsList = document.getElementById("softSkillsList");
+
+        const wishlistForm = document.getElementById("wishlistForm");
+        const wishlistInput = document.getElementById("wishlistInput");
+        const wishlistSkillsList = document.getElementById("wishlistSkillsList");
+
+        let technicalSkills = JSON.parse(localStorage.getItem("technicalSkills")) || [];
+        let softSkills = JSON.parse(localStorage.getItem("softSkills")) || [];
+        let wishlistSkills = JSON.parse(localStorage.getItem("wishlistSkills")) || [];
+
+        updateSkillsList(technicalSkillsList, technicalSkills);
+        updateSkillsList(softSkillsList, softSkills);
+        updateSkillsList(wishlistSkillsList, wishlistSkills);
+
+        technicalSkillsForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            const skill = technicalSkillInput.value.trim();
+            if (skill && !technicalSkills.includes(skill)) {
+                technicalSkills.push(skill);
+                updateSkillsList(technicalSkillsList, technicalSkills);
+                localStorage.setItem("technicalSkills", JSON.stringify(technicalSkills));
+                technicalSkillInput.value = "";
+            }
+        });
+
+        softSkillsForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            const skill = softSkillInput.value.trim();
+            if (skill && !softSkills.includes(skill)) {
+                softSkills.push(skill);
+                updateSkillsList(softSkillsList, softSkills);
+                localStorage.setItem("softSkills", JSON.stringify(softSkills));
+                softSkillInput.value = "";
+            }
+        });
+
+        wishlistForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            const skill = wishlistInput.value.trim();
+            if (skill && !wishlistSkills.includes(skill)) {
+                wishlistSkills.push(skill);
+                updateSkillsList(wishlistSkillsList, wishlistSkills);
+                localStorage.setItem("wishlistSkills", JSON.stringify(wishlistSkills));
+                wishlistInput.value = "";
+            }
+        });
+
+        function updateSkillsList(listElement, skillsArray) {
+            listElement.innerHTML = "";
+            skillsArray.forEach(function(skill, index) {
+                const li = document.createElement("li");
+                li.textContent = skill;
+                const deleteButton = document.createElement("span");
+                deleteButton.textContent = " -";
+                deleteButton.className = "delete-skill";
+                deleteButton.addEventListener("click", function() {
+                    skillsArray.splice(index, 1);
+                    localStorage.setItem("technicalSkills", JSON.stringify(technicalSkills));
+                    localStorage.setItem("softSkills", JSON.stringify(softSkills));
+                    localStorage.setItem("wishlistSkills", JSON.stringify(wishlistSkills));
+                    updateSkillsList(listElement, skillsArray);
+                });
+                li.appendChild(deleteButton);
+                listElement.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>

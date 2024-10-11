@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goal Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #E7E8D1;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        header {
+            background: #A7BEAE;
+            color: black;
+            padding: 10px 0;
+            text-align: center;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .goal-columns {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .goal-column {
+            width: 48%;
+            padding: 10px;
+            background-color: white;
+            border-radius: 8px;
+        }
+
+        .goal-column h3 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .goal-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input[type="text"], textarea, input[type="date"], select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #B85042;
+            color: black;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            height: 50px;
+        }
+
+        button:hover {
+            background: #A7BEAE;
+        }
+
+        .goal-item {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            background-color: #cdead6;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .goal-item.completed {
+            background-color: #e0ffe0;
+        }
+
+        .goal-item h4 {
+            margin: 5px 0;
+        }
+
+        .goal-item p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .message {
+            text-align: center;
+            color: green;
+            margin-top: 10px;
+        }
+
+        .home-icon {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            width: 30px;
+            height: auto;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px 0;
+            background: #E7E8D1;
+            color: black;
+            border-radius: 8px;
+        }
+
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .button-group button {
+            width: 48%;
+            padding: 10px;
+            height: 30px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .button-group button.completed {
+            background-color: #A7BEAE;
+        }
+
+        .button-group button.delete {
+            background-color: #B85042;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html"><img src="home-icon.png" alt="Home" class="home-icon"></a>
+            <img src="logo.png" alt="MyEduVault Logo" class="logo">
+            <h1>Goal Tracker</h1>
+        </header>
+
+        <div class="goal-columns">
+            <div class="goal-column" id="todoColumn">
+                <h3>To Do</h3>
+                <ul class="goal-list" id="todoList"></ul>
+            </div>
+            <div class="goal-column" id="completedColumn">
+                <h3>Completed</h3>
+                <ul class="goal-list" id="completedList"></ul>
+            </div>
+        </div>
+
+        <form id="goalForm">
+            <label for="goalTitle">Goal Title:</label>
+            <input type="text" id="goalTitle" name="goalTitle" placeholder="Enter your goal" required>
+
+            <label for="goalDescription">Goal Description:</label>
+            <textarea id="goalDescription" name="goalDescription" rows="4" placeholder="Describe the goal" required></textarea>
+
+            <label for="goalDate">Target Date:</label>
+            <input type="date" id="goalDate" name="goalDate" required>
+
+            <button type="submit">Add Goal</button>
+        </form>
+
+        <p class="message" id="successMessage"></p>
+
+        <footer>
+            <p>&copy; 2024 MyEduVault by Kalyani Krishna. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        const goalForm = document.getElementById("goalForm");
+        const goalTitleInput = document.getElementById("goalTitle");
+        const goalDescriptionInput = document.getElementById("goalDescription");
+        const goalDateInput = document.getElementById("goalDate");
+        const todoList = document.getElementById("todoList");
+        const completedList = document.getElementById("completedList");
+        const successMessage = document.getElementById("successMessage");
+
+        let goals = JSON.parse(localStorage.getItem("goals")) || [];
+
+        goalForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            const title = goalTitleInput.value.trim();
+            const description = goalDescriptionInput.value.trim();
+            const date = goalDateInput.value;
+
+            if (title && description && date) {
+                const goal = { title, description, date, completed: false };
+                goals.push(goal);
+                updateGoalLists();
+                localStorage.setItem("goals", JSON.stringify(goals));
+                goalForm.reset();
+                successMessage.textContent = "Goal added successfully!";
+            }
+        });
+
+        function updateGoalLists() {
+            todoList.innerHTML = "";
+            completedList.innerHTML = "";
+            goals.forEach(function(goal, index) {
+                const li = document.createElement("li");
+                li.classList.add("goal-item");
+                li.innerHTML = `<h4>${goal.title}</h4>
+                                <p>${goal.description}</p>
+                                <p>Target Date: ${goal.date}</p>
+                                <div class="button-group">
+                                    <button class="${goal.completed ? 'mark-todo' : 'completed'}" onclick="toggleComplete(${index})">
+                                        ${goal.completed ? "Mark as To Do" : "Completed"}
+                                    </button>
+                                    <button class="delete" onclick="deleteGoal(${index})">Delete</button>
+                                </div>`;
+                if (goal.completed) {
+                    completedList.appendChild(li);
+                } else {
+                    todoList.appendChild(li);
+                }
+            });
+        }
+
+        function toggleComplete(index) {
+            goals[index].completed = !goals[index].completed;
+            localStorage.setItem("goals", JSON.stringify(goals));
+            updateGoalLists();
+        }
+
+        function deleteGoal(index) {
+            goals.splice(index, 1);
+            localStorage.setItem("goals", JSON.stringify(goals));
+            updateGoalLists();
+            successMessage.textContent = "Goal removed successfully!";
+        }
+
+        updateGoalLists();
+    </script>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #E7E8D1;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        .home-icon {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            width: 30px;
+            height: auto;
+        }
+
+        header {
+            background: #A7BEAE;
+            color: black;
+            padding: 10px 0;
+            text-align: center;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input[type="text"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #B85042;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #A7BEAE;
+        }
+
+        .internship-list {
+            margin-top: 30px;
+        }
+
+        .internship-item {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .internship-item.completed {
+            background-color: #e0ffe0;
+        }
+
+        .internship-item h4 {
+            margin: 5px 0;
+        }
+
+        .internship-item p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .internship-item .internship-status {
+            font-weight: bold;
+        }
+
+        .message {
+            text-align: center;
+            color: #A7BEAE;
+            margin-top: 10px;
+        }
+
+        .internship-actions {
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .internship-actions button {
+            background-color: #A7BEAE;
+            color: white;
+            margin: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .internship-actions button.delete {
+            background-color: #B85042;
+        }
+
+        .internship-actions button.delete:hover {
+            background-color: #A7BEAE;
+        }
+
+        .internship-lists {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .accepted-list, .rejected-list {
+            width: 48%;
+            text-align:center;
+        }
+
+        .list-header {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+
+        .form-container {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #c3decb;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="logo.png" alt="MyDocVault Logo" class="logo">
+            <a href="index.html"><img src="home-icon.png" alt="Home" class="home-icon"></a>
+            <h1>Internship Application Tracker</h1>
+        </header>
+       
+        <div class="internship-list">
+            <h3>Internship Applications</h3>
+            <div id="internshipList"></div>
+            <p class="message" id="noApplicationsMessage"></p>
+        </div>
+
+        <h3>Add New Internship</h3>
+        <div class="form-container">
+            <form id="internshipForm">
+                <label for="companyName">Company Name:</label>
+                <input type="text" id="companyName" name="companyName" placeholder="Enter company name" required>
+
+                <label for="position">Position:</label>
+                <input type="text" id="position" name="position" placeholder="Position you applied for" required>
+
+                <label for="applicationDate">Application Date:</label>
+                <input type="date" id="applicationDate" name="applicationDate" required>
+
+                <label for="applicationStatus">Application Status:</label>
+                <select id="applicationStatus" name="applicationStatus" required>
+                    <option value="To Apply">To Apply</option>
+                    <option value="Applied">Applied</option>
+                    <option value="In Review">In Review</option>
+                    <option value="Interview Scheduled">Interview Scheduled</option>
+                    <option value="Offer Received">Offer Received</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+
+                <label for="notes">Notes:</label>
+                <textarea id="notes" name="notes" rows="4" placeholder="Additional notes about the application"></textarea>
+
+                <button type="submit">Add Internship Application</button>
+            </form>
+        </div>
+
+        <p class="message" id="successMessage"></p>
+
+        <div class="internship-lists">
+            <div class="accepted-list">
+                <h3>Accepted Internships</h3>
+                <div id="acceptedList"></div>
+            </div>
+
+            <div class="rejected-list">
+                <h3>Better Luck Next Time</h3>
+                <div id="rejectedList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const internshipForm = document.getElementById("internshipForm");
+        const successMessage = document.getElementById("successMessage");
+        const internshipList = document.getElementById("internshipList");
+        const noApplicationsMessage = document.getElementById("noApplicationsMessage");
+        const acceptedList = document.getElementById("acceptedList");
+        const rejectedList = document.getElementById("rejectedList");
+
+        // Load data from localStorage
+        let internships = JSON.parse(localStorage.getItem('internships')) || [];
+        let acceptedInternships = JSON.parse(localStorage.getItem('acceptedInternships')) || [];
+        let rejectedInternships = JSON.parse(localStorage.getItem('rejectedInternships')) || [];
+
+        // Handle form submission
+        internshipForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const companyName = document.getElementById("companyName").value.trim();
+            const position = document.getElementById("position").value.trim();
+            const applicationDate = document.getElementById("applicationDate").value;
+            const applicationStatus = document.getElementById("applicationStatus").value;
+            const notes = document.getElementById("notes").value.trim();
+
+            const newInternship = {
+                companyName,
+                position,
+                applicationDate,
+                applicationStatus,
+                notes,
+            };
+
+            internships.push(newInternship);
+            localStorage.setItem('internships', JSON.stringify(internships));
+            displayInternships();
+            internshipForm.reset();
+            successMessage.textContent = "Internship application added successfully!";
+        });
+
+        // Display internships
+        function displayInternships() {
+            internshipList.innerHTML = '';
+            acceptedList.innerHTML = '';
+            rejectedList.innerHTML = '';
+
+            if (internships.length === 0) {
+                noApplicationsMessage.textContent = "No Internship applications yet.";
+            } else {
+                noApplicationsMessage.textContent = "";
+                internships.forEach((internship, index) => {
+                    const internshipItem = document.createElement('div');
+                    internshipItem.classList.add('internship-item');
+
+                    internshipItem.innerHTML = `
+                        <h4>${internship.position} at ${internship.companyName}</h4>
+                        <p>Application Date: ${internship.applicationDate}</p>
+                        <p>Status: <span class="internship-status">${internship.applicationStatus}</span></p>
+                        <p>Notes: ${internship.notes}</p>
+                        <div class="internship-actions">
+                            <button class="complete" onclick="acceptInternship(${index})">Accepted</button>
+                            <button class="delete" onclick="rejectInternship(${index})">Better Luck Next Time</button>
+                        </div>
+                    `;
+
+                    internshipList.appendChild(internshipItem);
+                });
+            }
+
+            acceptedInternships.forEach((internship, index) => {
+                const acceptedItem = document.createElement('div');
+                acceptedItem.classList.add('internship-item');
+                acceptedItem.innerHTML = `
+                    <h4>${internship.position} at ${internship.companyName}</h4>
+                    <p>Application Date: ${internship.applicationDate}</p>
+                    <p>Status: <span class="internship-status">Accepted</span></p>
+                    <p>Notes: ${internship.notes}</p>
+                    <div class="internship-actions">
+                        <button class="delete" onclick="deleteAcceptedInternship(${index})">Delete</button>
+                    </div>
+                `;
+                acceptedList.appendChild(acceptedItem);
+            });
+
+            rejectedInternships.forEach((internship, index) => {
+                const rejectedItem = document.createElement('div');
+                rejectedItem.classList.add('internship-item');
+                rejectedItem.innerHTML = `
+                    <h4>${internship.position} at ${internship.companyName}</h4>
+                    <p>Application Date: ${internship.applicationDate}</p>
+                    <p>Status: <span class="internship-status">Rejected</span></p>
+                    <p>Notes: ${internship.notes}</p>
+                    <div class="internship-actions">
+                        <button class="delete" onclick="deleteRejectedInternship(${index})">Delete</button>
+                    </div>
+                `;
+                rejectedList.appendChild(rejectedItem);
+            });
+        }
+
+        // Accept internship
+        function acceptInternship(index) {
+            const acceptedInternship = internships.splice(index, 1)[0];
+            acceptedInternship.applicationStatus = "Accepted";
+            acceptedInternships.push(acceptedInternship);
+            localStorage.setItem('internships', JSON.stringify(internships));
+            localStorage.setItem('acceptedInternships', JSON.stringify(acceptedInternships));
+            displayInternships();
+        }
+
+        // Reject internship
+        function rejectInternship(index) {
+            const rejectedInternship = internships.splice(index, 1)[0];
+            rejectedInternship.applicationStatus = "Rejected";
+            rejectedInternships.push(rejectedInternship);
+            localStorage.setItem('internships', JSON.stringify(internships));
+            localStorage.setItem('rejectedInternships', JSON.stringify(rejectedInternships));
+            displayInternships();
+        }
+
+        // Delete accepted internship
+        function deleteAcceptedInternship(index) {
+            acceptedInternships.splice(index, 1);
+            localStorage.setItem('acceptedInternships', JSON.stringify(acceptedInternships));
+            displayInternships();
+        }
+
+        // Delete rejected internship
+        function deleteRejectedInternship(index) {
+            rejectedInternships.splice(index, 1);
+            localStorage.setItem('rejectedInternships', JSON.stringify(rejectedInternships));
+            displayInternships();
+        }
+
+        // Initial display
+        displayInternships();
+    </script>
+</body>
+</html>

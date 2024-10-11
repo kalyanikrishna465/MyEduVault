@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #E7E8D1;
+        }
+
+        .container {
+            width: 95%;
+            margin: auto;
+            overflow: hidden;
+            padding-top: 20px;
+        }
+
+        header {
+            background: #A7BEAE;
+            color: black;
+            padding: 10px 0;
+            text-align: center;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .logo {
+            width: 250px;
+            margin: 20px 0;
+        }
+
+        .profile-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+        }
+
+        .profile-icon img {
+            width: 40px;
+            border-radius: 50%;
+        }
+
+        main {
+            background: #FFFFFF;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        button {
+            background: #B85042;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #A7BEAE;
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px 0;
+            background: #E7E8D1;
+            color: black;
+            position: relative;
+            border-radius: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            border-radius: 8px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="logo.png" alt="MyEduVault Logo" class="logo">
+            <h1>Student Dashboard</h1>
+            <div class="profile-icon" onclick="document.getElementById('profileModal').style.display='block'">
+                <img src="user.png" alt="Profile Icon">
+            </div>
+        </header>
+
+        <main>
+            <h2>Welcome to MyEduVault</h2>
+            <p>What would you like to do today?</p>
+            <div class="button-container">
+                <button onclick="window.location.href='cgpa.html'">CGPA Calculator</button>
+                <button onclick="window.location.href='resume.html'">Resume Uploader</button>
+                <button onclick="window.location.href='skills.html'">Track Your Skills</button>
+                <button onclick="window.location.href='document.html'">Documents</button>
+                <button onclick="window.location.href='goal.html'">Goal Tracking</button>
+                <button onclick="window.location.href='internship.html'">Internship Tracker</button>
+                <button onclick="window.location.href='project.html'">Project Portfolio</button>
+                <button onclick="window.location.href='wellness.html'">Wellness Tracker</button>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2024 MyEduVault by Kalyani Krishna. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('profileModal').style.display='none'">&times;</span>
+            <h3>User Profile</h3>
+            <p>Name: Kalyani Krishna</p>
+            <p>Email: kalyanisnu22@gmail.com</p>
+            <p>LinkedIn: <a href="https://www.linkedin.com/in/kalyani-krishna-83b852259/" target="_blank">kalyanikrishna</a></p>
+            <p>GitHub: <a href="https://github.com/kalyanikrishna465" target="_blank">kalyanikrishna465</a></p>
+        </div>
+    </div>
+
+    <script>
+        window.onclick = function(event) {
+            const modal = document.getElementById('profileModal');
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

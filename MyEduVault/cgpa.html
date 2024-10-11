@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGPA Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #E7E8D1;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        header {
+            background: #A7BEAE; 
+            color: black;
+            padding: 10px 0;
+            text-align: center;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .home-icon {
+            position: absolute; 
+            left: 10px;
+            top: 10px; 
+            width: 30px; 
+            height: auto; 
+        }
+
+        main {
+            background: #E7E8D1;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #B85042; 
+            color: #ffffff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background: #9E4038;
+        }
+
+        .delete-button {
+            background: #B85042;
+        }
+
+        .delete-button:hover {
+            background: #9E4038;
+        }
+
+        .semester {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #c3decb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #B85042;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px 0;
+            color: black;
+            position: relative;
+        }
+
+        .cgpa-summary {
+            margin-top: 30px;
+            padding: 10px;
+            background: #e9ffe9;
+            border: 1px solid #B85042;
+            border-radius: 4px;
+        }
+
+        .logo {
+            max-width: 150px; 
+            height: auto; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <a href="index.html"><img src="home-icon.png" alt="Home" class="home-icon"></a> 
+            <img src="logo.png" alt="MyEduVault Logo" class="logo"> 
+            <h1>CGPA Calculator</h1>
+        </header>
+
+        <main>
+            <div id="semesters-container"></div>
+            <button id="add-semester">Add Semester</button>
+            <div class="cgpa-summary">
+                <h3>Total CGPA:</h3>
+                <div id="cgpa-result"></div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2024 MyEduVault by Kalyani Krishna. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        let semesterCount = 0;
+        let semestersData = JSON.parse(localStorage.getItem('semestersData')) || []; 
+
+        const gradePointsMap = {
+            'O': 10,
+            'A+': 9,
+            'A': 8,
+            'B+': 7,
+            'B': 6,
+            'C': 5,
+            'D': 4,
+            'F': 0
+        };
+
+        function displaySemesters() {
+            const semestersContainer = document.getElementById('semesters-container');
+            semestersContainer.innerHTML = ''; 
+
+            let overallTotalCredits = 0;
+            let overallTotalPoints = 0;
+
+            semestersData.forEach((semester, index) => {
+                const semesterDiv = document.createElement('div');
+                semesterDiv.classList.add('semester');
+
+                let tableHTML = `
+                    <h2>Semester ${index + 1}</h2>
+                    <table>
+                        <tr>
+                            <th>Subject Name</th>
+                            <th>Credits</th>
+                            <th>Grade</th>
+                        </tr>
+                `;
+
+                semester.subjects.forEach(subject => {
+                    tableHTML += `
+                        <tr>
+                            <td>${subject.name}</td>
+                            <td>${subject.credits}</td>
+                            <td>${subject.grade}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += `</table>`;
+                semesterDiv.innerHTML = tableHTML;
+
+                semesterDiv.innerHTML += `
+                    <button class="delete-button" onclick="deleteSemester(${index})">Delete Semester</button>
+                `;
+                semestersContainer.appendChild(semesterDiv);
+
+                overallTotalCredits += semester.totalCredits;
+                overallTotalPoints += semester.totalPoints;
+            });
+
+            if (overallTotalCredits > 0) {
+                const cgpa = (overallTotalPoints / overallTotalCredits).toFixed(2);
+                document.getElementById('cgpa-result').innerText = cgpa;
+            } else {
+                document.getElementById('cgpa-result').innerText = 'No semesters added yet.';
+            }
+        }
+
+        function deleteSemester(index) {
+            semestersData.splice(index, 1);
+            localStorage.setItem('semestersData', JSON.stringify(semestersData)); 
+            displaySemesters(); 
+        }
+
+        document.getElementById('add-semester').addEventListener('click', function() {
+            semesterCount++;
+            const semesterDiv = document.createElement('div');
+            semesterDiv.classList.add('semester');
+            semesterDiv.innerHTML = `
+                <h2>Semester ${semesterCount}</h2>
+                <label for="semester-name-${semesterCount}">Semester Name:</label>
+                <input type="text" id="semester-name-${semesterCount}" required>
+                <div class="subjects-container-${semesterCount}"></div>
+                <button class="add-subject" data-semester="${semesterCount}">Add Subject</button>
+                <button class="save-semester" data-semester="${semesterCount}">Save</button>
+                <hr>
+            `;
+            document.getElementById('semesters-container').appendChild(semesterDiv);
+
+            semesterDiv.querySelector('.add-subject').addEventListener('click', function() {
+                const subjectDiv = document.createElement('div');
+                subjectDiv.classList.add('subject');
+                subjectDiv.innerHTML = `
+                    <label for="subject-name-${semesterCount}-${Date.now()}">Subject Name:</label>
+                    <input type="text" id="subject-name-${semesterCount}-${Date.now()}" required>
+                    <label for="subject-credits-${semesterCount}-${Date.now()}">Credits:</label>
+                    <input type="number" id="subject-credits-${semesterCount}-${Date.now()}" required>
+                    <label for="subject-grade-${semesterCount}-${Date.now()}">Grade:</label>
+                    <select id="subject-grade-${semesterCount}-${Date.now()}" required>
+                        <option value="O">O</option>
+                        <option value="A+">A+</option>
+                        <option value="A">A</option>
+                        <option value="B+">B+</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="F">F</option>
+                    </select>
+                `;
+                semesterDiv.querySelector(`.subjects-container-${semesterCount}`).appendChild(subjectDiv);
+            });
+
+            semesterDiv.querySelector('.save-semester').addEventListener('click', function() {
+                const semesterName = document.getElementById(`semester-name-${semesterCount}`).value;
+                const subjectElements = document.querySelectorAll(`.subjects-container-${semesterCount} input[type="text"], .subjects-container-${semesterCount} input[type="number"], .subjects-container-${semesterCount} select`);
+
+                const subjects = [];
+                let totalCredits = 0;
+                let totalPoints = 0;
+
+                for (let i = 0; i < subjectElements.length; i += 3) {
+                    const subjectName = subjectElements[i].value;
+                    const subjectCredits = parseInt(subjectElements[i + 1].value);
+                    const subjectGrade = subjectElements[i + 2].value;
+                    const gradePoints = gradePointsMap[subjectGrade];
+
+                    if (subjectName && subjectCredits && !isNaN(subjectCredits) && gradePoints !== undefined) {
+                        subjects.push({ name: subjectName, credits: subjectCredits, grade: subjectGrade });
+                        totalCredits += subjectCredits;
+                        totalPoints += (subjectCredits * gradePoints);
+                    }
+                }
+
+                if (subjects.length > 0) {
+                    semestersData.push({ semesterName, subjects, totalCredits, totalPoints });
+                    localStorage.setItem('semestersData', JSON.stringify(semestersData)); 
+                    displaySemesters(); 
+                } else {
+                    alert('Please add at least one subject.');
+                }
+            });
+        });
+
+        displaySemesters(); 
+    </script>
+</body>
+</html>

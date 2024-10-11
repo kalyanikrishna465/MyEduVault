@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Uploader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #E7E8D1; 
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        header {
+            background: #A7BEAE; 
+            color: black;
+            padding: 10px 0;
+            text-align: center;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .home-icon {
+            position: absolute;
+            left: 10px; 
+            top: 10px; 
+            width: 30px; 
+            height: auto; 
+        }
+
+        main {
+            background: #ffffff; 
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #B85042; 
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px; 
+        }
+
+        button:hover {
+            background: #A7BEAE; 
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px 0;
+            background: #E7E8D1; 
+            color: black;
+            position: relative;
+        }
+
+        #upload-status {
+            margin-top: 20px;
+        }
+
+        a {
+            display: block;
+            margin-top: 10px;
+            color: #B85042; 
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        #resume-view {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
+            height: 400px; 
+            overflow: auto;
+            display: none; 
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .logo {
+            max-width: 150px; 
+            height: auto; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html"><img src="home-icon.png" alt="Home" class="home-icon"></a>
+            <img src="logo.png" alt="MyEduVault Logo" class="logo"> 
+            <h1>Resume Uploader</h1>
+        </header>
+        <main>
+            <form id="resume-form">
+                <label for="resume-file">Upload your resume (PDF, DOCX):</label>
+                <input type="file" id="resume-file" accept=".pdf, .docx" required>
+                <button type="submit">Upload Resume</button>
+                <button type="button" id="clear-resume">Clear Resume</button>
+            </form>
+            <div id="upload-status"></div>
+            <div id="resume-view">
+                <iframe id="resume-iframe" src=""></iframe>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2024 MyEduVault by Kalyani Krishna. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        const resumeForm = document.getElementById('resume-form');
+        const uploadStatus = document.getElementById('upload-status');
+        const resumeView = document.getElementById('resume-view');
+        const resumeIframe = document.getElementById('resume-iframe');
+
+        window.onload = function () {
+            const savedResumeUrl = localStorage.getItem('resumeUrl');
+            if (savedResumeUrl) {
+                resumeIframe.src = savedResumeUrl;
+                resumeView.style.display = 'block';
+                uploadStatus.innerHTML = `
+                    <p>Resume loaded successfully!</p>
+                    <a href="${savedResumeUrl}" target="_blank">View Resume</a>
+                `;
+            }
+        };
+
+        resumeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fileInput = document.getElementById('resume-file');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file.');
+                return;
+            }
+
+            const validExtensions = ['.pdf', '.docx'];
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+
+            if (!validExtensions.includes(`.${fileExtension}`)) {
+                alert('Invalid file type. Please upload a PDF or DOCX file.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onloadend = function () {
+                const dataUrl = reader.result;
+                localStorage.setItem('resumeUrl', dataUrl);
+
+                uploadStatus.innerHTML = `
+                    <p>Resume uploaded successfully!</p>
+                    <p>File: <strong>${file.name}</strong></p>
+                    <a href="${dataUrl}" target="_blank">View Resume</a>
+                `;
+
+                resumeIframe.src = dataUrl;
+                resumeView.style.display = 'block';
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('clear-resume').addEventListener('click', () => {
+            localStorage.removeItem('resumeUrl');
+            uploadStatus.innerHTML = '';
+            resumeView.style.display = 'none';
+            resumeIframe.src = '';
+        });
+    </script>
+</body>
+</html>
