@@ -47,7 +47,7 @@ MyEduVault is a comprehensive web application designed to assist students in man
 - **Storage:** AWS S3 or local storage for document management
 
 ## Usage
-Username : user
-Password : password
-Utilize the various features to manage your academic records, resumes, skills, documents, and goals.
+-Username : user
+-Password : password
+-Utilize the various features to manage your academic records, resumes, skills, documents, and goals.
 
