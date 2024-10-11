@@ -6,7 +6,7 @@ MyEduVault is a comprehensive web application designed to assist students in man
 
 1. **User Authentication**
    - Secure login system allowing users to create accounts and manage profiles.
-   - 
+     
 2. **Dashboard**
    - User-friendly interface providing an overview of academic progress, upcoming deadlines.
 
