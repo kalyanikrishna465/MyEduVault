@@ -41,8 +41,7 @@ MyEduVault is a comprehensive web application designed to assist students in man
 
 ## Technology Stack
 
-- **Frontend:** HTML, CSS, JavaScript (React.js)
-- **Backend:** Node.js, Express.js
+- **Frontend:** HTML, CSS
 - **Authentication:** JSON Web Tokens (JWT)
 - **Storage:** AWS S3 or local storage for document management
 
